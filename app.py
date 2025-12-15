@@ -9,16 +9,23 @@ import numpy as np
 import joblib
 import os
 import cv2
+import json
 from utils import LivenessDetector
 import plotly.graph_objects as go
 import plotly.express as px
 from datetime import datetime
 import time
 
+# Import report generator
+try:
+    from report_generator import generate_pdf_report, generate_simple_report, REPORTLAB_AVAILABLE
+except:
+    REPORTLAB_AVAILABLE = False
+
 # Page configuration
 st.set_page_config(
     page_title="BioVerify: AI-Powered Fake Account Detector",
-    page_icon="🛡️",
+    page_icon="👤",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -49,33 +56,33 @@ st.markdown("""
         font-family: 'Orbitron', sans-serif;
         font-size: 5rem;
         font-weight: 900;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #f093fb;
         text-align: center;
         margin-bottom: 0.5rem;
-        animation: neonGlow 3s ease-in-out infinite alternate;
         letter-spacing: 3px;
+        text-shadow: 0 0 30px #667eea, 0 0 60px #764ba2, 0 0 90px #f093fb;
+        transition: all 0.5s ease;
+        cursor: default;
     }
     
-    @keyframes neonGlow {
-        from {
-            filter: drop-shadow(0 0 20px #667eea) drop-shadow(0 0 40px #764ba2);
-        }
-        to {
-            filter: drop-shadow(0 0 30px #764ba2) drop-shadow(0 0 60px #f093fb);
-        }
+    .main-header:hover {
+        text-shadow: 0 0 40px #667eea, 0 0 80px #764ba2, 0 0 120px #f093fb, 0 0 150px #667eea;
+        transform: scale(1.02);
     }
     
     .sub-header {
         font-size: 1.5rem;
-        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #a8edea;
         text-align: center;
         margin-bottom: 2rem;
         font-weight: 300;
         letter-spacing: 1px;
+        text-shadow: 0 0 15px rgba(168, 237, 234, 0.5);
+        transition: all 0.5s ease;
+    }
+    
+    .sub-header:hover {
+        text-shadow: 0 0 25px rgba(168, 237, 234, 0.8), 0 0 40px rgba(254, 214, 227, 0.6);
     }
     
     .content-box {
@@ -157,20 +164,25 @@ st.markdown("""
     .camera-stats {
         display: flex;
         justify-content: center;
-        gap: 40px;
-        margin: 30px 0;
+        gap: 20px;
+        margin: 30px auto;
         flex-wrap: wrap;
+        max-width: 100%;
+        padding: 0 20px;
     }
     
     .stat-box {
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
         border: 2px solid rgba(102, 126, 234, 0.4);
-        padding: 25px 40px;
+        padding: 20px 15px;
         border-radius: 20px;
         text-align: center;
-        min-width: 180px;
+        min-width: 140px;
+        max-width: 180px;
+        flex: 1 1 140px;
         transition: all 0.3s ease;
+        overflow: hidden;
     }
     
     .stat-box:hover {
@@ -180,19 +192,25 @@ st.markdown("""
     
     .stat-value {
         font-family: 'Orbitron', sans-serif;
-        font-size: 3.5rem;
+        font-size: 2.5rem;
         font-weight: 900;
         color: white;
         text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
-        margin: 10px 0;
+        margin: 5px 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     
     .stat-label {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
         color: rgba(255, 255, 255, 0.9);
         text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
         font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     
     .step-card {
@@ -490,10 +508,11 @@ st.markdown("""
     }
     
     label {
-        color: white !important;
+        color: #f093fb !important;
         font-weight: 600 !important;
         letter-spacing: 1px !important;
         font-size: 1.1rem !important;
+        text-shadow: 0 0 10px rgba(240, 147, 251, 0.5) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -553,35 +572,72 @@ def demo_mode_prediction(features):
     return min(risk_score, 100)
 
 def predict_fake_probability(model, feature_names, user_inputs):
-    """Predict fake account probability"""
+    """Predict fake account probability with engineered features"""
+    import numpy as np
+    
+    # Calculate engineered features
+    followers = user_inputs.get('followers', 0)
+    following = user_inputs.get('following', 0)
+    posts = user_inputs.get('posts', 0)
+    profile_pic = user_inputs.get('profile_pic', 1)
+    bio_length = user_inputs.get('bio_length', 0)
+    username_ratio = user_inputs.get('username_ratio', 0)
+    
+    # Engineered features
+    followers_following_ratio = followers / (following + 1)
+    posts_per_follower = posts / (followers + 1)
+    engagement_potential = posts * followers / (following + 1)
+    log_followers = np.log1p(followers)
+    log_following = np.log1p(following)
+    log_posts = np.log1p(posts)
+    username_suspicion = username_ratio * (1 - profile_pic)
+    profile_completeness = (
+        profile_pic * 0.3 +
+        (1 if bio_length > 0 else 0) * 0.3 +
+        (1 if posts > 5 else 0) * 0.2 +
+        (1 if followers > 10 else 0) * 0.2
+    )
+    suspicious_score = (
+        (1 if following > followers * 3 else 0) * 0.3 +
+        (1 if posts < 3 else 0) * 0.2 +
+        (1 if profile_pic == 0 else 0) * 0.3 +
+        (1 if username_ratio > 0.3 else 0) * 0.2
+    )
+    
+    # Map all features
+    feature_map = {
+        '#followers': followers,
+        '#follows': following,
+        '#posts': posts,
+        'profile pic': profile_pic,
+        'description length': bio_length,
+        'external URL': user_inputs.get('external_url', 0),
+        'private': user_inputs.get('private', 0),
+        'nums/length username': username_ratio,
+        'fullname words': user_inputs.get('fullname_words', 0),
+        'nums/length fullname': user_inputs.get('fullname_ratio', 0),
+        'name==username': user_inputs.get('name_equals_username', 0),
+        'followers_following_ratio': followers_following_ratio,
+        'posts_per_follower': posts_per_follower,
+        'engagement_potential': engagement_potential,
+        'log_followers': log_followers,
+        'log_following': log_following,
+        'log_posts': log_posts,
+        'username_suspicion': username_suspicion,
+        'profile_completeness': profile_completeness,
+        'suspicious_score': suspicious_score
+    }
+    
     feature_values = []
     for feature in feature_names:
-        if feature == '#followers':
-            feature_values.append(user_inputs.get('followers', 0))
-        elif feature == '#follows':
-            feature_values.append(user_inputs.get('following', 0))
-        elif feature == '#posts':
-            feature_values.append(user_inputs.get('posts', 0))
-        elif feature == 'profile pic':
-            feature_values.append(user_inputs.get('profile_pic', 1))
-        elif feature == 'description length':
-            feature_values.append(user_inputs.get('bio_length', 0))
-        elif feature == 'external URL':
-            feature_values.append(user_inputs.get('external_url', 0))
-        elif feature == 'private':
-            feature_values.append(user_inputs.get('private', 0))
-        elif feature == 'nums/length username':
-            feature_values.append(user_inputs.get('username_ratio', 0))
-        elif feature == 'fullname words':
-            feature_values.append(user_inputs.get('fullname_words', 0))
-        elif feature == 'nums/length fullname':
-            feature_values.append(user_inputs.get('fullname_ratio', 0))
-        elif feature == 'name==username':
-            feature_values.append(user_inputs.get('name_equals_username', 0))
-        else:
-            feature_values.append(0)
+        feature_values.append(feature_map.get(feature, 0))
     
     features_array = np.array(feature_values).reshape(1, -1)
+    
+    # Handle potential NaN/Inf
+    features_array = np.nan_to_num(features_array, nan=0, posinf=1e10, neginf=-1e10)
+    
+    # Check if model has scaler
     probability = model.predict_proba(features_array)[0][1]
     
     return probability * 100
@@ -627,48 +683,45 @@ def calculate_liveness_percentage(blink_count, face_detected_duration, total_dur
     face_score = (face_detected_duration / total_duration) * 40
     return min(blink_score + face_score, 100)
 
-def run_liveness_test_with_timer(duration=20):
-    """Run liveness test with timer and enhanced UI - CENTERED CAMERA"""
+def run_liveness_test_with_timer(duration=30):
+    """Run multi-factor liveness test with challenges"""
     st.markdown("""
     <div class="info-box">
-        <h3 style="margin: 0;">🎥 Live Camera Verification in Progress</h3>
-        <p style="margin: 10px 0 0 0;">Duration: 20 seconds | Keep face visible and blink naturally (3+ times required)</p>
+        <h3 style="margin: 0;">🎥 Multi-Factor Liveness Verification</h3>
+        <p style="margin: 10px 0 0 0;">Complete the challenges shown on screen: Move head, Smile, or Raise hand</p>
     </div>
     """, unsafe_allow_html=True)
     
-    detector = LivenessDetector(required_blinks=3)
+    detector = LivenessDetector(num_challenges=3)
     cap = cv2.VideoCapture(0)
     
     if not cap.isOpened():
         st.error("❌ Camera access denied. Please enable camera permissions.")
         return 0, 0, False
     
-    # CENTERED CAMERA - Full width
+    # Camera display
     st.markdown('<div class="camera-container">', unsafe_allow_html=True)
     frame_placeholder = st.empty()
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # Stats below camera - CENTERED
+    # Stats below camera - 4 columns for detailed stats
     st.markdown('<div class="camera-stats">', unsafe_allow_html=True)
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         timer_placeholder = st.empty()
     with col2:
-        blink_placeholder = st.empty()
+        moves_placeholder = st.empty()
     with col3:
-        face_status_placeholder = st.empty()
+        blinks_placeholder = st.empty()
     with col4:
-        ear_placeholder = st.empty()
+        face_status_placeholder = st.empty()
     st.markdown('</div>', unsafe_allow_html=True)
     
     progress_placeholder = st.empty()
     
     start_time = time.time()
     face_detected_time = 0
-    last_face_detected = False
     last_time = start_time
-    last_blink_count = 0
-    current_ear = 0
     
     try:
         while True:
@@ -677,7 +730,7 @@ def run_liveness_test_with_timer(duration=20):
             remaining = max(0, duration - elapsed)
             progress = (elapsed / duration) * 100
             
-            if elapsed >= duration:
+            if elapsed >= duration or detector.is_liveness_passed():
                 break
             
             ret, frame = cap.read()
@@ -685,40 +738,45 @@ def run_liveness_test_with_timer(duration=20):
                 break
             
             frame = cv2.flip(frame, 1)
-            processed_frame, ear, blink_detected, face_detected = detector.process_frame(frame)
-            current_ear = ear
+            processed_frame, movement, challenge_done, face_detected = detector.process_frame(frame)
             
             time_delta = current_time - last_time
             if face_detected:
                 face_detected_time += time_delta
-                last_face_detected = True
-            else:
-                last_face_detected = False
             last_time = current_time
             
-            # Enhanced frame overlays
-            cv2.rectangle(processed_frame, (0, 0), (processed_frame.shape[1], 80), (15, 12, 41), -1)
+            # Draw header with challenge info
+            h, w = processed_frame.shape[:2]
+            cv2.rectangle(processed_frame, (0, 0), (w, 90), (15, 12, 41), -1)
             border_color = (56, 239, 125) if face_detected else (235, 51, 73)
-            cv2.rectangle(processed_frame, (0, 0), (processed_frame.shape[1], 80), border_color, 5)
+            cv2.rectangle(processed_frame, (0, 0), (w, 90), border_color, 4)
             
-            cv2.putText(processed_frame, f"TIME: {int(remaining)}s | BLINKS: {detector.blink_count}", 
-                       (30, 55), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 4)
+            # Show time and challenges
+            cv2.putText(processed_frame, f"TIME: {int(remaining)}s", (20, 40), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
+            cv2.putText(processed_frame, f"CHALLENGES: {detector.challenges_completed}/3", (20, 75), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 200), 2)
             
             processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
             frame_placeholder.image(processed_frame, channels="RGB", use_column_width=True)
             
-            # Update stats below camera - CENTERED
+            # Update stats
             timer_placeholder.markdown(
                 f'<div class="stat-box"><div class="stat-value">{int(remaining)}</div><div class="stat-label">⏱️ Seconds</div></div>', 
                 unsafe_allow_html=True
             )
             
-            blink_placeholder.markdown(
+            moves_placeholder.markdown(
+                f'<div class="stat-box"><div class="stat-value">{detector.moment_count}</div><div class="stat-label">🔄 Moves</div></div>', 
+                unsafe_allow_html=True
+            )
+            
+            blinks_placeholder.markdown(
                 f'<div class="stat-box"><div class="stat-value">{detector.blink_count}</div><div class="stat-label">👁️ Blinks</div></div>', 
                 unsafe_allow_html=True
             )
             
-            if last_face_detected:
+            if face_detected:
                 face_status_placeholder.markdown(
                     '<div class="stat-box" style="border-color: #38ef7d;"><div class="stat-value">✅</div><div class="stat-label">Face OK</div></div>',
                     unsafe_allow_html=True
@@ -729,11 +787,6 @@ def run_liveness_test_with_timer(duration=20):
                     unsafe_allow_html=True
                 )
             
-            ear_placeholder.markdown(
-                f'<div class="stat-box"><div class="stat-value">{current_ear:.3f}</div><div class="stat-label">👁️ EAR</div></div>',
-                unsafe_allow_html=True
-            )
-            
             progress_placeholder.progress(int(progress))
             time.sleep(0.03)
                 
@@ -742,20 +795,20 @@ def run_liveness_test_with_timer(duration=20):
         detector.cleanup()
         frame_placeholder.empty()
     
-    liveness_percentage = calculate_liveness_percentage(detector.blink_count, face_detected_time, duration)
+    liveness_score = detector.get_liveness_score()
     
-    st.session_state.blink_count = detector.blink_count
-    st.session_state.liveness_score = liveness_percentage
+    st.session_state.blink_count = detector.moment_count
+    st.session_state.liveness_score = liveness_score
     st.session_state.face_detected = face_detected_time > 0
     st.session_state.verification_complete = True
     
-    return detector.blink_count, liveness_percentage, face_detected_time > 0
+    return detector.blink_count, liveness_score, face_detected_time > 0
 
 def main():
     # Premium Animated Header with LOGO
     st.markdown("""
     <div style="text-align: center; padding: 50px 0 30px 0;">
-        <div style="font-size: 5rem; margin-bottom: 20px;">🛡️</div>
+        <div style="font-size: 5rem; margin-bottom: 20px;">👤</div>
         <h1 class="main-header">BIOVERIFY</h1>
         <p class="sub-header">Next-Gen AI-Powered Multi-Modal Fake Account Detection</p>
         <div style="margin: 25px 0;">
@@ -903,14 +956,28 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
+        # Initialize attempt counter
+        if 'verification_attempts' not in st.session_state:
+            st.session_state.verification_attempts = 0
+        
+        # Show retry warning if previous attempt failed
+        if st.session_state.verification_attempts == 1:
+            st.markdown("""
+            <div class="warning-box">
+                <h3>⚠️ Please Move Your Head!</h3>
+                <p>No sufficient head movements detected in last attempt. This is your <b>final attempt</b>.</p>
+                <p>Move your head (nod, turn, or tilt) at least 3 times clearly during the verification.</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
         # Instructions
         st.markdown("""
         <div class="info-box">
             <h3>📋 Verification Instructions:</h3>
             <ul style="font-size: 1.1rem; line-height: 1.8;">
                 <li>🎯 Position your face clearly in the camera frame</li>
-                <li>👀 Look directly at the camera</li>
-                <li>😊 Blink naturally (minimum 3 times required)</li>
+                <li>👤 Look directly at the camera</li>
+                <li>🔄 Move your head naturally (nod, turn, or tilt 3+ times)</li>
                 <li>⏱️ Maintain visibility for full 20 seconds</li>
                 <li>💡 Ensure good lighting conditions</li>
             </ul>
@@ -919,22 +986,50 @@ def main():
         
         col_center = st.columns([1, 2, 1])[1]
         with col_center:
-            if st.button("🚀 START VERIFICATION", use_container_width=True):
+            button_text = "🚀 START VERIFICATION" if st.session_state.verification_attempts == 0 else "🔄 TRY AGAIN (Final Attempt)"
+            if st.button(button_text, use_container_width=True):
+                st.session_state.verification_attempts += 1
                 blink_count, liveness_score, face_detected = run_liveness_test_with_timer()
                 
-                if liveness_score >= 50:
-                    st.session_state.liveness_passed = True
+                # Case 1: No face detected at all - mark as FAKE
+                if not face_detected:
+                    st.session_state.liveness_passed = False
+                    st.session_state.liveness_score = 0
+                    st.session_state.blink_count = 0
+                    st.session_state.face_detected = False
+                    st.session_state.no_face_detected = True
                     st.session_state.current_step = 3
+                    st.session_state.verification_attempts = 0
+                    st.rerun()
+                
+                # Case 2: Passed liveness test
+                elif liveness_score >= 50:
+                    st.session_state.liveness_passed = True
+                    st.session_state.no_face_detected = False
+                    st.session_state.current_step = 3
+                    st.session_state.verification_attempts = 0
                     st.balloons()
                     st.rerun()
-                else:
+                
+                # Case 3: Failed but first attempt - show retry option
+                elif st.session_state.verification_attempts == 1:
                     st.markdown(f"""
-                    <div class="danger-box">
-                        <h3>❌ Verification Failed</h3>
+                    <div class="warning-box">
+                        <h3>⚠️ Insufficient Head Movement Detected</h3>
                         <p><b>Liveness Score:</b> {liveness_score:.1f}%</p>
-                        <p>Please try again. Ensure proper lighting and blink naturally.</p>
+                        <p><b>Movements Detected:</b> {blink_count}</p>
+                        <p>Please try again and move your head more clearly (nod, turn, or tilt).</p>
                     </div>
                     """, unsafe_allow_html=True)
+                    st.rerun()
+                
+                # Case 4: Failed second attempt - proceed to step 3 with low score
+                else:
+                    st.session_state.liveness_passed = False
+                    st.session_state.no_face_detected = False
+                    st.session_state.current_step = 3
+                    st.session_state.verification_attempts = 0
+                    st.rerun()
     
     # STEP 3: Final Results
     elif st.session_state.current_step == 3:
@@ -978,25 +1073,34 @@ def main():
             st.plotly_chart(create_animated_gauge(st.session_state.liveness_score, "Liveness Verification", 50), use_container_width=True)
         
         # Combined Assessment with CLEAR VERDICT
-        combined_risk = (st.session_state.account_fake_prob * 0.6 + (100 - st.session_state.liveness_score) * 0.4)
         
-        st.markdown("### 🎯 Final Security Verdict")
-        
-        if combined_risk < 40:
-            verdict_class = "verdict-box-real"
-            verdict_icon = "✅"
-            verdict_text = "REAL ACCOUNT VERIFIED"
-            verdict_desc = "This account demonstrates strong authenticity indicators with successful biometric verification. Safe to proceed."
-        elif combined_risk < 70:
-            verdict_class = "warning-box"
-            verdict_icon = "⚠️"
-            verdict_text = "SUSPICIOUS - MANUAL REVIEW REQUIRED"
-            verdict_desc = "Suspicious patterns detected. Additional verification and human review recommended before approval."
-        else:
+        # Check if no face was detected - directly mark as FAKE
+        if st.session_state.get('no_face_detected', False):
+            combined_risk = 100
             verdict_class = "verdict-box-fake"
             verdict_icon = "🚫"
             verdict_text = "FAKE ACCOUNT DETECTED"
-            verdict_desc = "Strong indicators of fraudulent account. Immediate action recommended: Block or escalate for investigation."
+            verdict_desc = "No face visible during biometric verification. This is a strong indicator of a fraudulent or bot account. Immediate action recommended: Block or escalate for investigation."
+        else:
+            combined_risk = (st.session_state.account_fake_prob * 0.6 + (100 - st.session_state.liveness_score) * 0.4)
+            
+            if combined_risk < 40:
+                verdict_class = "verdict-box-real"
+                verdict_icon = "✅"
+                verdict_text = "REAL ACCOUNT VERIFIED"
+                verdict_desc = "This account demonstrates strong authenticity indicators with successful biometric verification. Safe to proceed."
+            elif combined_risk < 70:
+                verdict_class = "warning-box"
+                verdict_icon = "⚠️"
+                verdict_text = "SUSPICIOUS - MANUAL REVIEW REQUIRED"
+                verdict_desc = "Suspicious patterns detected. Additional verification and human review recommended before approval."
+            else:
+                verdict_class = "verdict-box-fake"
+                verdict_icon = "🚫"
+                verdict_text = "FAKE ACCOUNT DETECTED"
+                verdict_desc = "Strong indicators of fraudulent account. Immediate action recommended: Block or escalate for investigation."
+        
+        st.markdown("### 🎯 Final Security Verdict")
         
         st.markdown(f"""
         <div class="{verdict_class}">
@@ -1014,9 +1118,9 @@ def main():
         with m1:
             st.markdown(f"""
             <div class="metric-card">
-                <div class="metric-label">Blinks</div>
+                <div class="metric-label">Face Moments</div>
                 <div class="metric-value">{st.session_state.blink_count}</div>
-                <p style="margin: 5px 0 0 0;">👁️ Eye Activity</p>
+                <p style="margin: 5px 0 0 0;">🎭 Facial Activity</p>
             </div>
             """, unsafe_allow_html=True)
         
@@ -1052,9 +1156,69 @@ def main():
             </div>
             """, unsafe_allow_html=True)
         
-        # Reset button
+        # Save verification to history
+        verification_data = {
+            'username': st.session_state.user_inputs.get('username', 'unknown'),
+            'account_score': st.session_state.account_fake_prob,
+            'liveness_score': st.session_state.liveness_score,
+            'verdict': verdict_text,
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'is_fake': 'FAKE' in verdict_text
+        }
+        
+        # Store in session for PDF generation
+        st.session_state.verification_data = verification_data
+        
+        # Save to history file
+        history_file = 'data/verifications.json'
+        if os.path.exists(history_file):
+            try:
+                with open(history_file, 'r') as f:
+                    history = json.load(f)
+            except:
+                history = {"verifications": [], "total_count": 0, "passed_count": 0, "failed_count": 0}
+        else:
+            history = {"verifications": [], "total_count": 0, "passed_count": 0, "failed_count": 0}
+        
+        # Add this verification
+        if not hasattr(st.session_state, 'verification_saved') or not st.session_state.verification_saved:
+            history["verifications"].append(verification_data)
+            history["total_count"] += 1
+            if verification_data['is_fake']:
+                history["failed_count"] += 1
+            else:
+                history["passed_count"] += 1
+            
+            os.makedirs('data', exist_ok=True)
+            with open(history_file, 'w') as f:
+                json.dump(history, f, indent=2)
+            st.session_state.verification_saved = True
+        
+        # Action buttons
         st.markdown("<br>", unsafe_allow_html=True)
-        col_reset = st.columns([1, 2, 1])[1]
+        col_pdf, col_reset = st.columns(2)
+        
+        with col_pdf:
+            if REPORTLAB_AVAILABLE:
+                pdf_buffer = generate_pdf_report(verification_data)
+                if pdf_buffer:
+                    st.download_button(
+                        label="📄 DOWNLOAD PDF REPORT",
+                        data=pdf_buffer,
+                        file_name=f"bioverify_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
+            else:
+                text_report = generate_simple_report(verification_data) if 'generate_simple_report' in dir() else "Report generation not available"
+                st.download_button(
+                    label="📄 DOWNLOAD TEXT REPORT",
+                    data=text_report,
+                    file_name=f"bioverify_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                    mime="text/plain",
+                    use_container_width=True
+                )
+        
         with col_reset:
             if st.button("🔄 START NEW VERIFICATION", use_container_width=True):
                 for key in list(st.session_state.keys()):
@@ -1065,7 +1229,7 @@ def main():
     st.markdown("---")
     st.markdown("""
     <div class="footer">
-        <h3 style="font-family: 'Orbitron', sans-serif; font-size: 2rem; margin-bottom: 15px;">🛡️ BIOVERIFY</h3>
+        <h3 style="font-family: 'Orbitron', sans-serif; font-size: 2rem; margin-bottom: 15px;">👤 BIOVERIFY</h3>
         <p style="font-size: 1.1rem; margin: 10px 0;">Next-Generation Security Platform</p>
         <p style="margin-top: 15px; font-size: 1rem; opacity: 0.9;">
             Powered by Advanced Machine Learning & Computer Vision Technology
