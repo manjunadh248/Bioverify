@@ -2,63 +2,84 @@
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.31%2B-red)
+![XGBoost](https://img.shields.io/badge/XGBoost-2.0%2B-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
 
-**BioVerify** is an advanced AI-powered system that combines **Machine Learning-based Metadata Analysis** with **Real-time Biometric Verification** to detect fake social media accounts with high accuracy.
+**BioVerify** is an advanced AI-powered system that combines **Machine Learning-based Risk Analysis**, **Real-time Biometric Verification**, and **Face Encoding Comparison** to detect fake social media accounts and prevent account fraud.
 
-## 🌟 Features
+---
+
+## 🌟 Key Features
+
+### 🔐 Dual Flow System
+- **Flow A (New Users)**: Registration with Aadhaar verification, risk analysis, and face enrollment
+- **Flow B (Existing Users)**: Login with social media data analysis and face matching
 
 ### 🤖 Machine Learning Detection
-- **Random Forest Classifier** trained on real Instagram data
-- **11 metadata features** analysis
-- **92%+ accuracy** on test dataset
+- **XGBoost Classifier** trained on multi-dataset (Instagram + Twitter)
+- **20+ engineered features** for comprehensive analysis
+- **~93% accuracy** with cross-validation
 - **SMOTE balancing** for handling imbalanced data
 
 ### 👁️ Biometric Verification
-- **20-second timed camera test**
-- **Eye blink detection** using MediaPipe Face Mesh
-- **Face presence tracking** with duration measurement
+- **Multi-factor liveness detection**: Head movement + Eye blink detection
+- **Face encoding capture** using MediaPipe Face Mesh
+- **Duplicate face detection** for new user registration
+- **Face mismatch detection** for existing user login
 - **Real-time visual feedback** with countdown timer
 
 ### 🎯 Intelligent Risk Assessment
-- **Multi-level scoring system** (0-100%)
-- **Weighted risk calculation** (70% metadata + 30% biometric)
-- **VETO logic** for automatic bot detection
-- **Clear actionable recommendations**
+- **Context-aware scoring** - Distinguishes celebrities from fake accounts
+- **Configurable thresholds** via `config.json`
+- **Reason codes** for audit trails
+- **Multi-level decisions**: Allow, Verify, Block
 
-### 📊 User Experience
-- **3-step verification workflow**
-- **Interactive progress tracking**
-- **Real-time camera feedback**
-- **Professional dashboard with visualizations**
+### 🗄️ User Database
+- **SQLite database** for persistent user storage
+- **Aadhaar hashing** for privacy (SHA-256)
+- **Face encoding storage** for identity verification
+- **Risk history tracking** for pattern analysis
+
+### 📊 Admin Dashboard
+- **Real-time statistics** on verifications
+- **User management** with status tracking
+- **Verification history** and reports
 
 ---
 
 ## 🏗️ System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    BioVerify System                      │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│  STEP 1: Account Metadata Analysis                      │
-│  ├── User Input (11 features)                           │
-│  ├── ML Model Prediction                                │
-│  └── Account Fake Probability (0-100%)                  │
-│                                                          │
-│  STEP 2: Biometric Verification (20 seconds)            │
-│  ├── Camera Activation                                  │
-│  ├── Face Detection (MediaPipe)                         │
-│  ├── Blink Detection (EAR Algorithm)                    │
-│  └── Liveness Score (0-100%)                            │
-│                                                          │
-│  STEP 3: Final Risk Assessment                          │
-│  ├── Weighted Combination                               │
-│  ├── VETO Logic Application                             │
-│  └── Final Verdict with Recommendation                  │
-│                                                          │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                      BioVerify System                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  FLOW A: New User Registration                               │
+│  ├── Step 0: User Type Selection                             │
+│  ├── Step 1: Aadhaar + Username Verification                 │
+│  │   ├── Aadhaar Format Validation                           │
+│  │   ├── Duplicate Aadhaar Check                             │
+│  │   └── Username Availability Check                         │
+│  ├── Step 2: Biometric Verification                          │
+│  │   ├── Liveness Detection (Head + Blinks)                  │
+│  │   ├── Face Encoding Capture                               │
+│  │   └── Duplicate Face Detection                            │
+│  └── Step 3: Final Results & Account Creation                │
+│                                                              │
+│  FLOW B: Existing User Login                                 │
+│  ├── Step 0: Account Lookup (Aadhaar or Username)            │
+│  ├── Step 1: Social Media Risk Analysis                      │
+│  │   ├── Platform Selection (Instagram/Twitter)              │
+│  │   ├── Followers/Following/Posts Analysis                  │
+│  │   └── Profile Completeness Check                          │
+│  ├── Step 2: Conditional Verification                        │
+│  │   ├── LOW Risk → Direct Login                             │
+│  │   ├── MEDIUM Risk → Liveness + Face Match                 │
+│  │   └── HIGH Risk → Block Account                           │
+│  └── Step 3: Final Results                                   │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -68,12 +89,26 @@
 ```
 BioVerify/
 ├── data/
-│   └── train.csv                    # Instagram dataset (download separately)
+│   ├── train.csv                    # Instagram dataset
+│   ├── fakeAccountData.json         # InstaFake fake accounts
+│   ├── realAccountData.json         # InstaFake real accounts
+│   ├── twitter_human_bots_dataset.csv  # Twitter dataset
+│   ├── users.db                     # SQLite user database
+│   └── verifications.json           # Verification history
 ├── models/
-│   └── fake_account_model.pkl       # Trained ML model (generated)
-├── app.py                           # Main Streamlit dashboard
-├── train_model.py                   # Model training script
+│   └── fake_account_model.pkl       # Trained XGBoost model
+├── pages/
+│   └── 1_Admin_Dashboard.py         # Admin dashboard page
+├── app.py                           # Main Streamlit application
+├── face_encoder.py                  # Face encoding module
+├── risk_analyzer.py                 # Risk analysis engine
+├── user_database.py                 # User database management
+├── govid_verifier.py                # Mock Government ID verifier
 ├── utils.py                         # Liveness detection utilities
+├── report_generator.py              # PDF/Text report generation
+├── train_model.py                   # Single dataset training
+├── train_multi_dataset.py           # Multi-dataset training
+├── config.json                      # Configuration settings
 ├── requirements.txt                 # Python dependencies
 └── README.md                        # Project documentation
 ```
@@ -86,80 +121,41 @@ BioVerify/
 
 - **Python 3.10 or 3.11** (recommended)
 - **Webcam** (built-in or external)
-- **Internet connection** (for dataset download)
+- **4GB+ RAM**
 
 ### Installation
 
 #### 1. Clone or Download Project
 
 ```bash
-# Create project directory
-mkdir BioVerify
+git clone https://github.com/yourusername/bioverify.git
 cd BioVerify
-
-# Create subdirectories
-mkdir data models
 ```
 
-#### 2. Download Dataset
-
-**Option A: Manual Download (Recommended)**
-
-1. Visit: [Instagram Fake Account Dataset](https://www.kaggle.com/datasets/free4ever1/instagram-fake-spammer-genuine-accounts)
-2. Click **Download** (requires free Kaggle account)
-3. Extract `train.csv` from the downloaded archive
-4. Place `train.csv` in the `data/` folder
-
-**Option B: Using Kaggle API**
+#### 2. Create Virtual Environment
 
 ```bash
-# Install Kaggle
-pip install kaggle
+# Create virtual environment
+python -m venv .venv
 
-# Configure API credentials (see Kaggle documentation)
-# Download dataset
-kaggle datasets download -d free4ever1/instagram-fake-spammer-genuine-accounts
-
-# Extract to data folder
-unzip instagram-fake-spammer-genuine-accounts.zip -d data/
+# Activate virtual environment
+# Windows:
+.\.venv\Scripts\Activate.ps1
+# Mac/Linux:
+source .venv/bin/activate
 ```
 
 #### 3. Install Dependencies
 
 ```bash
-# Create virtual environment (recommended)
-python -m venv venv
-
-# Activate virtual environment
-# Windows:
-venv\Scripts\activate
-# Mac/Linux:
-source venv/bin/activate
-
-# Install required packages
 pip install -r requirements.txt
 ```
 
-#### 4. Train the Model
+#### 4. Train the Model (Optional - Pre-trained model included)
 
 ```bash
-python train_model.py
-```
-
-**Expected Output:**
-```
-============================================================
-🔬 BioVerify: Fake Account Detector - Training Pipeline
-============================================================
-📂 Loading dataset...
-✅ Dataset loaded: 696 rows, 12 columns
-...
-✨ Accuracy: 92.14%
-💾 Saving model...
-✅ Model saved to: models/fake_account_model.pkl
-============================================================
-✅ TRAINING COMPLETE!
-============================================================
+# Train with all datasets
+python train_multi_dataset.py
 ```
 
 #### 5. Run the Application
@@ -168,79 +164,83 @@ python train_model.py
 streamlit run app.py
 ```
 
-The app will automatically open in your browser at `http://localhost:8501`
+The app will open at `http://localhost:8501`
 
 ---
 
 ## 📖 Usage Guide
 
-### Step 1: Account Information Entry
+### New User Registration (Flow A)
 
-1. Fill in the account metadata:
-   - **Basic Stats**: Followers, Following, Posts
-   - **Profile Features**: Profile picture, Bio length, External URL
-   - **Account Settings**: Privacy status
-   - **Advanced Metrics**: Username/name characteristics
+1. **Select "New User"** on the welcome screen
+2. **Enter Aadhaar Number** (12 digits) and **choose a username**
+3. **Complete Liveness Test**:
+   - Move your head (nod, turn, tilt) 3 times
+   - OR blink naturally 3 times
+4. **Account Created** with your face encoded for future verification
 
-2. Click **"➡️ Proceed to Camera Verification"**
+### Existing User Login (Flow B)
 
-### Step 2: Camera Verification (20 Seconds)
-
-1. Click **"🎥 Start 20-Second Camera Test"**
-2. **Allow camera access** when prompted by your browser
-3. Position your face in the camera view
-4. **Blink naturally 2-3 times** during the 20-second test
-5. Keep your face visible throughout the test
-6. The system automatically stops after 20 seconds
-
-**Scoring Breakdown:**
-- **Blink Score (60 points)**: 20 points per blink (max 3 blinks)
-- **Face Detection Score (40 points)**: Based on face visibility duration
-- **Total Liveness Score**: 0-100%
-
-### Step 3: Final Results
-
-View comprehensive results including:
-- **Account Fake Probability** (from ML model)
-- **Liveness Score** (from biometric test)
-- **Final Combined Risk Score** (weighted average)
-- **Actionable Recommendation** (Approve/Monitor/Block)
+1. **Select "Existing User"** on the welcome screen
+2. **Login with Aadhaar or Username**
+3. **Enter Social Media Data**:
+   - Platform (Instagram/Twitter)
+   - Followers, Following, Posts count
+   - Profile completeness info
+4. **Risk Analysis Results**:
+   - **LOW Risk**: Direct login allowed
+   - **MEDIUM Risk**: Complete liveness + face verification
+   - **HIGH Risk**: Account blocked
 
 ---
 
-## 🧮 Risk Calculation Formula
+## 🧮 Risk Calculation
 
-### Standard Calculation
-```
-Final Risk = (0.7 × Account Fake Probability) + (0.3 × Liveness Risk)
+### Risk Score Tiers
 
-Where:
-  Liveness Risk = 100 - Liveness Score
-```
+| Score | Tier | Action |
+|-------|------|--------|
+| 0-29 | ✅ LOW | Login Allowed |
+| 30-69 | ⚠️ MEDIUM | Verification Required |
+| 70-100 | 🚫 HIGH | Account Blocked |
 
-### VETO Override Rules
+### Risk Factors (New Users)
 
-```
-IF Liveness Score < 30%:
-    Final Risk = 100% (No face detected or no blinks)
-    Verdict: CONFIRMED FAKE/BOT
+| Factor | Risk Added |
+|--------|------------|
+| Suspicious username patterns | +10 to +20 |
+| Disposable email domain | +15 |
+| Low followers (<50) | +8 to +15 |
+| No profile picture | +20 |
+| Low posts (<10) | +8 to +15 |
+| Suspicious follow ratio | +15 to +45 |
 
-ELSE IF Liveness Score < 50%:
-    Final Risk = 100% (Failed verification threshold)
-    Verdict: LIKELY FAKE/BOT
+### Risk Factors (Existing Users)
 
-ELSE:
-    Final Risk = Weighted Calculation
-    Verdict: Based on combined score
-```
+| Factor | Risk Added |
+|--------|------------|
+| Unverified status | +30 |
+| Previously flagged | +50 |
+| Previously blocked | +100 |
+| Device changed | +25 |
+| Location changed | +15 |
+| Failed previous liveness | +20 |
 
-### Risk Categories
+### Celebrity Detection
 
-| Final Risk Score | Category | Recommendation |
-|-----------------|----------|----------------|
-| 70-100% | 🚨 HIGH RISK | **BLOCK** - Likely fake/bot account |
-| 40-69% | ⚠️ MODERATE RISK | **MONITOR** - Require additional verification |
-| 0-39% | ✅ LOW RISK | **APPROVE** - Likely genuine account |
+The system distinguishes real celebrities from fake accounts:
+
+**Treated as Celebrity if ALL true:**
+- 1M+ followers
+- Profile picture ✓
+- Bio present ✓
+- 50+ posts ✓
+- 100+ following ✓
+
+**Fake/Bot Pattern:**
+- High followers + incomplete profile
+- Extreme follower/following ratio (>1000:1)
+- Impossibly high numbers (>8 billion)
 
 ---
 
@@ -248,449 +248,169 @@ ELSE:
 
 ### Machine Learning Model
 
-**Algorithm**: Random Forest Classifier
+**Algorithm**: XGBoost Classifier
 
-**Parameters**:
-- `n_estimators`: 100 trees
-- `max_depth`: 15
-- `min_samples_split`: 10
-- `min_samples_leaf`: 5
-- `class_weight`: balanced
-- `random_state`: 42
+**Training Data**:
+- Instagram dataset: 576 samples
+- InstaFake dataset: 1,194 samples
+- **Total**: 1,770 samples
 
-**Features Used** (11 total):
-1. Profile picture presence (0/1)
-2. Numbers/length ratio in username
-3. Full name word count
-4. Numbers/length ratio in full name
-5. Name equals username (0/1)
-6. Bio/description length
-7. External URL presence (0/1)
-8. Private account status (0/1)
-9. Number of posts
-10. Number of followers
-11. Number of following
+**Performance**:
+- Accuracy: ~93%
+- AUC-ROC: ~98%
+- Cross-validation: 5-fold
 
-**Data Preprocessing**:
-- Missing value imputation
-- SMOTE for class balancing
-- 80/20 train-test split
+**Features Used** (20 total):
+- Profile pic, bio length, external URL
+- Followers, following, posts count
+- Username patterns (numeric ratio)
+- Engagement ratios
+- Suspicious score (engineered)
 
-**Performance Metrics**:
-- Accuracy: ~92%
-- Precision: ~93% (Fake class)
-- Recall: ~91% (Fake class)
-- F1-Score: ~92%
+### Face Encoding System
 
-### Biometric Verification
+**Technology**: MediaPipe Face Mesh (468 landmarks)
 
-**Technology**: MediaPipe Face Mesh
+**Key Components**:
+- 50 key landmarks for encoding
+- Normalized feature vectors
+- Cosine similarity comparison
+- **Threshold**: 85% similarity for match
 
-**Algorithm**: Eye Aspect Ratio (EAR)
+**Duplicate Detection**:
+- Compares new face against all stored encodings
+- Blocks registration if face already exists
+- Suggests login or account deletion
 
-**EAR Formula**:
-```
-EAR = (||p2 - p6|| + ||p3 - p5||) / (2 × ||p1 - p4||)
+### Liveness Detection
 
-Where p1-p6 are eye landmark points
-```
+**Dual-factor verification**:
+1. **Head Movement**: Detects nods, turns, tilts
+2. **Eye Blinks**: Uses Eye Aspect Ratio (EAR)
 
-**Blink Detection Threshold**: EAR < 0.25
-
-**Face Mesh Landmarks**:
-- Left Eye: Points [33, 160, 158, 133, 153, 144]
-- Right Eye: Points [362, 385, 387, 263, 373, 380]
-
-**Processing Pipeline**:
-1. Capture video frame (30 FPS)
-2. Convert BGR → RGB
-3. Detect face mesh landmarks
-4. Calculate EAR for both eyes
-5. Detect blink (EAR below threshold)
-6. Track face detection duration
-7. Calculate final liveness score
+**Requirements**:
+- 3 total actions (movements + blinks)
+- Face visible throughout test
+- ~30 second timeout
 
 ---
 
-## 📊 Dataset Information
-
-**Source**: [Instagram Fake Spammer Genuine Accounts Dataset](https://www.kaggle.com/datasets/free4ever1/instagram-fake-spammer-genuine-accounts)
-
-**Size**: 696 accounts (347 genuine, 349 fake)
-
-**Features**: 12 columns including metadata and target label
-
-**Target Variable**: `fake` (0 = Real, 1 = Fake)
-
-**Class Distribution**: Approximately balanced (50-50)
-
----
-
-## 🛠️ Dependencies
-
-### Core Libraries
-- `streamlit>=1.31.0` - Web application framework
-- `pandas>=2.1.0` - Data manipulation
-- `numpy>=1.26.0` - Numerical computing
-- `scikit-learn>=1.4.0` - Machine learning
-- `joblib>=1.3.0` - Model serialization
-
-### Computer Vision
-- `opencv-python>=4.9.0` - Video capture and processing
-- `mediapipe>=0.10.9` - Face mesh detection
-- `scipy>=1.11.0` - Spatial distance calculations
-
-### Visualization
-- `plotly>=5.18.0` - Interactive charts and gauges
-
-### Data Balancing
-- `imbalanced-learn>=0.12.0` - SMOTE implementation
-
----
-
-## 🔧 Configuration
-
-### Camera Settings
-- **Test Duration**: 20 seconds (fixed)
-- **Required Blinks**: 3 (for maximum score)
-- **EAR Threshold**: 0.25
-- **Frame Rate**: ~30 FPS
-- **Face Mesh Mode**: Single face detection
-
-### Model Settings
-- **Model Path**: `models/fake_account_model.pkl`
-- **Auto-load**: Yes (with fallback to demo mode)
-- **Demo Mode**: Rule-based heuristics if model unavailable
-
-### Risk Weights
-- **Account Risk Weight**: 70%
-- **Liveness Risk Weight**: 30%
-- **Veto Threshold**: Liveness < 50%
-
----
-
-## 🐛 Troubleshooting
-
-### Common Issues and Solutions
-
-#### 1. "train.csv not found"
-**Problem**: Dataset not downloaded or in wrong location
-
-**Solution**:
-```bash
-# Verify file location
-ls data/train.csv  # Mac/Linux
-dir data\train.csv # Windows
-
-# Should exist and show file size
-```
-
-#### 2. "Could not access webcam"
-**Problem**: Camera permissions denied
-
-**Solutions**:
-- **Chrome**: Click camera icon in address bar → Allow
-- **Windows**: Settings → Privacy → Camera → Enable
-- **Mac**: System Preferences → Security → Camera → Allow Terminal/Chrome
-- **Linux**: Check device permissions: `ls -l /dev/video0`
-
-#### 3. "Module not found" errors
-**Problem**: Dependencies not installed
-
-**Solution**:
-```bash
-# Ensure virtual environment is activated
-source venv/bin/activate  # Mac/Linux
-venv\Scripts\activate     # Windows
-
-# Reinstall dependencies
-pip install -r requirements.txt --upgrade
-```
-
-#### 4. "Demo Mode Active" warning
-**Problem**: Model not trained
-
-**Solution**:
-```bash
-# Train the model
-python train_model.py
-
-# Verify model file exists
-ls models/fake_account_model.pkl
-```
-
-#### 5. MediaPipe installation fails
-**Problem**: Binary wheel not available
-
-**Solutions**:
-```bash
-# Try upgrading pip first
-pip install --upgrade pip
-
-# Install latest MediaPipe
-pip install mediapipe --upgrade
-
-# If still fails (rare):
-pip install mediapipe --no-binary mediapipe
-```
-
-#### 6. Low model accuracy
-**Problem**: Dataset quality or overfitting
-
-**Solutions**:
-- Ensure `train.csv` is complete and uncorrupted
-- Try adjusting Random Forest parameters in `train_model.py`
-- Check for sufficient training data
-
-#### 7. Camera feed is laggy
-**Problem**: System resources or high resolution
-
-**Solutions**:
-- Close other applications using the camera
-- Reduce face mesh processing (edit `utils.py`)
-- Check system CPU/memory usage
-
----
-
-## 🔒 Privacy & Security
-
-### Data Handling
-- ✅ **No data storage**: All processing happens in memory
-- ✅ **No external servers**: All computation is local
-- ✅ **No tracking**: No analytics or user tracking
-- ✅ **Session-based**: Data cleared on browser refresh
-
-### Camera Usage
-- ✅ Camera only activated when user clicks "Start Test"
-- ✅ Video frames processed in real-time (not saved)
-- ✅ Automatic camera release after test completion
-- ✅ Clear visual indicator when camera is active
-
-### Model Security
-- ✅ Model trained on public dataset
-- ✅ No personal data in training set
-- ✅ Predictions based solely on metadata patterns
-- ✅ No reverse engineering of user accounts
-
----
-
-## 📈 Performance Benchmarks
-
-### Training Performance
-- **Training Time**: ~30-60 seconds (696 samples)
-- **Memory Usage**: ~200-300 MB
-- **Model Size**: ~10 MB (saved pickle)
-
-### Inference Performance
-- **Prediction Time**: <100ms per account
-- **Camera Processing**: 30 FPS (real-time)
-- **Face Detection**: ~50ms per frame
-- **Total Verification Time**: 20 seconds (fixed)
-
-### System Requirements
-- **Minimum RAM**: 4 GB
-- **Recommended RAM**: 8 GB+
-- **CPU**: Any modern processor (2+ cores recommended)
-- **Storage**: ~100 MB (including dependencies)
-
----
-
-## 🚀 Future Enhancements
-
-### Planned Features
-- [ ] Additional biometric checks (head movement, smile detection)
-- [ ] Multi-face detection for shared device scenarios
-- [ ] Export verification reports (PDF/JSON)
-- [ ] API endpoint for integration with other systems
-- [ ] Support for additional social media platforms
-- [ ] Advanced anomaly detection algorithms
-- [ ] User authentication system
-- [ ] Historical verification logs
-
-### Model Improvements
-- [ ] Deep learning models (CNN, LSTM)
-- [ ] Ensemble methods (XGBoost, LightGBM)
-- [ ] Feature engineering automation
-- [ ] Active learning pipeline
-- [ ] Real-time model updates
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
-
-```
-MIT License
-
-Copyright (c) 2024 BioVerify
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
----
-
-## 👥 Contributing
-
-Contributions are welcome! Please follow these guidelines:
-
-### How to Contribute
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/AmazingFeature`)
-3. **Commit** your changes (`git commit -m 'Add AmazingFeature'`)
-4. **Push** to the branch (`git push origin feature/AmazingFeature`)
-5. **Open** a Pull Request
-
-### Code Standards
-- Follow PEP 8 style guide for Python
-- Add docstrings to all functions
-- Include unit tests for new features
-- Update documentation as needed
-
----
-
-## 🙏 Acknowledgments
-
-### Technologies
-- **Streamlit** - Web framework
-- **MediaPipe** - Face detection (Google)
-- **Scikit-learn** - Machine learning library
-- **OpenCV** - Computer vision
-
-### Dataset
-- **Kaggle** - Instagram Fake Account Dataset
-- **Contributors** - Dataset creators and maintainers
-
-### Inspiration
-- Modern KYC (Know Your Customer) systems
-- Social media fraud prevention
-- Biometric authentication systems
-
----
-
-## 📞 Support
-
-### Getting Help
-
-- **Issues**: Open an issue on GitHub
-- **Documentation**: Refer to this README
-- **Troubleshooting**: See troubleshooting section above
-
-### Reporting Bugs
-
-When reporting bugs, please include:
-- Python version (`python --version`)
-- Operating system
-- Error messages (full traceback)
-- Steps to reproduce
-- Expected vs actual behavior
-
----
-
-## 📊 Project Statistics
-
-![GitHub Repo Size](https://img.shields.io/github/repo-size/yourusername/bioverify)
-![Lines of Code](https://img.shields.io/tokei/lines/github/yourusername/bioverify)
-![Last Commit](https://img.shields.io/github/last-commit/yourusername/bioverify)
-
-**Code Metrics**:
-- **Total Lines**: ~1,500
-- **Python Files**: 4
-- **Functions**: 20+
-- **Classes**: 2
-
----
-
-## 🎯 Use Cases
-
-### Social Media Platforms
-- Account registration verification
-- Bot detection during signup
-- Spam account identification
-- Automated abuse prevention
-
-### E-commerce
-- Seller verification
-- Review authenticity checking
-- Fraud prevention
-- Account security enhancement
-
-### Enterprise
-- Employee account verification
-- Access control systems
-- Identity verification
-- Compliance requirements
-
-### Research
-- Social media analysis
-- Bot detection studies
-- ML model benchmarking
-- Biometric research
-
----
-
-## 📚 Citations
-
-If you use this project in your research, please cite:
-
-```bibtex
-@software{bioverify2024,
-  title={BioVerify: Multi-Modal Fake Account Detector},
-  author={Your Name},
-  year={2024},
-  url={https://github.com/yourusername/bioverify}
+## ⚙️ Configuration
+
+### config.json
+
+```json
+{
+  "risk_thresholds": {
+    "low": 30,
+    "high": 70
+  },
+  "verification": {
+    "liveness_duration": 30,
+    "liveness_pass_threshold": 50
+  },
+  "ui": {
+    "show_risk_details": true,
+    "show_reason_codes": true
+  }
 }
 ```
 
 ---
 
-## 🌟 Star History
+## 🗄️ Database Schema
 
-If you find this project useful, please consider giving it a ⭐ on GitHub!
+### Users Table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| username | TEXT | Unique username |
+| aadhaar_hash | TEXT | SHA-256 hashed Aadhaar |
+| face_encoding | TEXT | JSON-serialized face encoding |
+| verification_status | TEXT | verified/unverified/flagged/blocked |
+| previous_liveness_passed | INTEGER | Boolean |
+| previous_govid_passed | INTEGER | Boolean |
+| risk_history | TEXT | JSON array of past assessments |
+| created_at | TEXT | ISO timestamp |
+| updated_at | TEXT | ISO timestamp |
 
 ---
 
-## 📜 Version History
+## 🧪 Testing
 
-### v2.0 (Current) - Enhanced Multi-Step Verification
-- ✨ Added 3-step workflow
-- ⏱️ 20-second timed camera verification
+### Setup Test Accounts
+
+```bash
+python setup_test_accounts.py
+```
+
+This creates test accounts with different statuses:
+- 3 Unverified accounts
+- 4 Blocked accounts
+- 3 Flagged accounts
+- 2 Pending accounts
+
+### Test Scenarios
+
+1. **Face Mismatch Test**: Login as another user's account → Should detect face mismatch
+2. **No Face Encoding Test**: Login as `blocked_bot1` → Shows "No Biometric Record Found"
+3. **High Risk Test**: Enter suspicious social media data → Should block
+
+---
+
+## 🐛 Troubleshooting
+
+### Camera Access Denied
+- **Chrome**: Click camera icon in address bar → Allow
+- **Windows**: Settings → Privacy → Camera → Enable
+
+### "Module not found" errors
+```bash
+pip install -r requirements.txt --upgrade
+```
+
+### XGBoost Warning
+```bash
+# Retrain model to fix serialization warning
+python train_multi_dataset.py
+```
+
+---
+
+## 📄 License
+
+MIT License - See LICENSE file for details.
+
+---
+
+## 📊 Version History
+
+### v3.0 (Current) - Full Identity Verification System
+- ✨ Dual flow system (New + Existing users)
+- 🔐 Aadhaar-based registration
+- 👤 Face encoding & duplicate detection
+- 🎭 Face mismatch detection for existing users
+- 📊 Multi-dataset ML training
+- ⚙️ Configurable risk thresholds
+- 🗄️ SQLite user database
+- 📋 Admin dashboard
+
+### v2.0 - Enhanced Multi-Step Verification
+- ⏱️ Timed camera verification
 - 📊 Percentage-based liveness scoring
-- 🎯 Enhanced VETO logic with multiple thresholds
-- 📱 Improved UI/UX with progress indicators
-- 🔧 Better error handling and fallbacks
+- 🎯 VETO logic with thresholds
 
 ### v1.0 - Initial Release
 - 🤖 ML-based account analysis
 - 👁️ Basic liveness detection
-- 📊 Streamlit dashboard
-- 🎯 Simple risk calculation
 
 ---
 
 <div align="center">
 
-**Built with ❤️ using Python, Streamlit, and AI**
+**Built with ❤️ using Python, Streamlit, XGBoost, and MediaPipe**
 
 Made for detecting fake accounts and protecting online communities
-
-[⭐ Star this repo](https://github.com/yourusername/bioverify) | [🐛 Report Bug](https://github.com/yourusername/bioverify/issues) | [💡 Request Feature](https://github.com/yourusername/bioverify/issues)
 
 </div>
