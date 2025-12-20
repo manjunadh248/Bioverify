@@ -1,0 +1,19 @@
+{
+    "risk_thresholds": {
+        "low": 30,
+        "high": 70
+    },
+    "verification": {
+        "liveness_duration": 20,
+        "liveness_pass_threshold": 50,
+        "govid_mock_success_rate": 0.9
+    },
+    "security": {
+        "max_verification_attempts": 2,
+        "block_after_failed_attempts": 3
+    },
+    "ui": {
+        "show_risk_details": true,
+        "show_reason_codes": true
+    }
+}

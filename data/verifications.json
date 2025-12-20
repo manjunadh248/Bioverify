@@ -1,431 +1,455 @@
 {
   "verifications": [
     {
-      "timestamp": "2025-12-05T23:45:48.807308",
-      "username": "user9",
-      "account_score": 21,
-      "liveness_score": 43,
-      "verdict": "FAKE",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-11-19T23:45:48.807308",
-      "username": "user7",
-      "account_score": 13,
-      "liveness_score": 63,
-      "verdict": "REAL",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-12-13T23:45:48.807308",
-      "username": "user35",
-      "account_score": 35,
-      "liveness_score": 60,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-11-20T23:45:48.807308",
-      "username": "user20",
-      "account_score": 47,
-      "liveness_score": 89,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-12-11T23:45:48.807308",
-      "username": "user7",
-      "account_score": 31,
-      "liveness_score": 98,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-12-04T23:45:48.807308",
-      "username": "user47",
-      "account_score": 71,
-      "liveness_score": 65,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-12-05T23:45:48.807308",
-      "username": "user35",
-      "account_score": 31,
-      "liveness_score": 34,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-12-04T23:45:48.807308",
-      "username": "user4",
-      "account_score": 51,
-      "liveness_score": 72,
-      "verdict": "SUSPICIOUS",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-12-12T23:45:48.807308",
+      "timestamp": "2025-12-04T07:58:55.201094",
       "username": "user33",
-      "account_score": 52,
-      "liveness_score": 85,
-      "verdict": "REAL",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-12-10T23:45:48.807308",
-      "username": "user4",
-      "account_score": 77,
-      "liveness_score": 30,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-11-24T23:45:48.807308",
-      "username": "user34",
-      "account_score": 85,
-      "liveness_score": 33,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-11-28T23:45:48.807308",
-      "username": "user22",
-      "account_score": 39,
-      "liveness_score": 46,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-12-03T23:45:48.807308",
-      "username": "user11",
-      "account_score": 67,
-      "liveness_score": 47,
-      "verdict": "SUSPICIOUS",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-12-05T23:45:48.807308",
-      "username": "user34",
-      "account_score": 91,
-      "liveness_score": 88,
-      "verdict": "FAKE",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-12-06T23:45:48.807308",
-      "username": "user15",
-      "account_score": 52,
+      "account_score": 16,
       "liveness_score": 95,
       "verdict": "SUSPICIOUS",
       "is_fake": false
     },
     {
-      "timestamp": "2025-12-14T23:45:48.807308",
-      "username": "user44",
-      "account_score": 29,
-      "liveness_score": 53,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-11-22T23:45:48.807308",
-      "username": "user39",
-      "account_score": 62,
-      "liveness_score": 100,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-11-23T23:45:48.807308",
-      "username": "user15",
-      "account_score": 42,
-      "liveness_score": 61,
-      "verdict": "REAL",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-11-26T23:45:48.807308",
-      "username": "user29",
-      "account_score": 54,
-      "liveness_score": 62,
-      "verdict": "REAL",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-12-07T23:45:48.807308",
-      "username": "user16",
-      "account_score": 18,
-      "liveness_score": 37,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-12-09T23:45:48.807308",
-      "username": "user33",
-      "account_score": 88,
-      "liveness_score": 48,
-      "verdict": "REAL",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-12-06T23:45:48.807308",
-      "username": "user20",
-      "account_score": 80,
-      "liveness_score": 91,
+      "timestamp": "2025-12-08T07:58:55.201094",
+      "username": "user32",
+      "account_score": 36,
+      "liveness_score": 46,
       "verdict": "SUSPICIOUS",
       "is_fake": false
     },
     {
-      "timestamp": "2025-12-13T23:45:48.807308",
-      "username": "user37",
-      "account_score": 65,
-      "liveness_score": 48,
-      "verdict": "FAKE",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-12-08T23:45:48.807308",
-      "username": "user26",
-      "account_score": 24,
-      "liveness_score": 100,
-      "verdict": "SUSPICIOUS",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-12-02T23:45:48.807308",
-      "username": "user45",
-      "account_score": 64,
-      "liveness_score": 68,
-      "verdict": "FAKE",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-12-05T23:45:48.807308",
-      "username": "user19",
-      "account_score": 54,
-      "liveness_score": 47,
-      "verdict": "SUSPICIOUS",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-12-09T23:45:48.807308",
-      "username": "user21",
-      "account_score": 31,
-      "liveness_score": 72,
-      "verdict": "REAL",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-11-30T23:45:48.807308",
+      "timestamp": "2025-11-23T07:58:55.201094",
       "username": "user2",
-      "account_score": 65,
-      "liveness_score": 72,
+      "account_score": 31,
+      "liveness_score": 69,
       "verdict": "FAKE",
       "is_fake": false
     },
     {
-      "timestamp": "2025-12-07T23:45:48.807308",
-      "username": "user30",
-      "account_score": 85,
-      "liveness_score": 60,
-      "verdict": "FAKE",
+      "timestamp": "2025-11-29T07:58:55.201094",
+      "username": "user25",
+      "account_score": 23,
+      "liveness_score": 95,
+      "verdict": "REAL",
       "is_fake": false
     },
     {
-      "timestamp": "2025-11-21T23:45:48.807308",
+      "timestamp": "2025-12-08T07:58:55.201094",
       "username": "user47",
-      "account_score": 77,
-      "liveness_score": 41,
+      "account_score": 57,
+      "liveness_score": 31,
       "verdict": "FAKE",
       "is_fake": true
     },
     {
-      "timestamp": "2025-12-05T23:45:48.807308",
-      "username": "user50",
-      "account_score": 19,
-      "liveness_score": 96,
+      "timestamp": "2025-11-24T07:58:55.201094",
+      "username": "user43",
+      "account_score": 27,
+      "liveness_score": 40,
       "verdict": "FAKE",
-      "is_fake": false
+      "is_fake": true
     },
     {
-      "timestamp": "2025-12-08T23:45:48.807308",
-      "username": "user47",
-      "account_score": 61,
-      "liveness_score": 86,
-      "verdict": "SUSPICIOUS",
-      "is_fake": false
+      "timestamp": "2025-12-06T07:58:55.201094",
+      "username": "user41",
+      "account_score": 91,
+      "liveness_score": 63,
+      "verdict": "FAKE",
+      "is_fake": true
     },
     {
-      "timestamp": "2025-11-27T23:45:48.807308",
-      "username": "user18",
+      "timestamp": "2025-12-18T07:58:55.201094",
+      "username": "user45",
       "account_score": 21,
       "liveness_score": 50,
-      "verdict": "SUSPICIOUS",
+      "verdict": "FAKE",
       "is_fake": false
     },
     {
-      "timestamp": "2025-11-17T23:45:48.807308",
-      "username": "user42",
-      "account_score": 18,
-      "liveness_score": 99,
-      "verdict": "FAKE",
-      "is_fake": true
-    },
-    {
-      "timestamp": "2025-11-16T23:45:48.807308",
-      "username": "user13",
-      "account_score": 23,
+      "timestamp": "2025-11-29T07:58:55.201094",
+      "username": "user28",
+      "account_score": 19,
       "liveness_score": 76,
       "verdict": "REAL",
       "is_fake": false
     },
     {
-      "timestamp": "2025-11-19T23:45:48.807308",
-      "username": "user43",
-      "account_score": 77,
-      "liveness_score": 78,
+      "timestamp": "2025-12-20T07:58:55.201094",
+      "username": "user16",
+      "account_score": 95,
+      "liveness_score": 76,
       "verdict": "FAKE",
       "is_fake": true
     },
     {
-      "timestamp": "2025-11-21T23:45:48.807308",
-      "username": "user47",
-      "account_score": 28,
-      "liveness_score": 62,
-      "verdict": "REAL",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-11-22T23:45:48.807308",
-      "username": "user10",
-      "account_score": 34,
-      "liveness_score": 82,
+      "timestamp": "2025-12-15T07:58:55.201094",
+      "username": "user26",
+      "account_score": 82,
+      "liveness_score": 47,
       "verdict": "FAKE",
       "is_fake": false
     },
     {
-      "timestamp": "2025-12-12T23:45:48.807308",
-      "username": "user14",
-      "account_score": 68,
-      "liveness_score": 58,
-      "verdict": "FAKE",
-      "is_fake": false
-    },
-    {
-      "timestamp": "2025-11-29T23:45:48.807308",
-      "username": "user48",
-      "account_score": 39,
-      "liveness_score": 45,
+      "timestamp": "2025-11-26T07:58:55.201094",
+      "username": "user11",
+      "account_score": 29,
+      "liveness_score": 80,
       "verdict": "FAKE",
       "is_fake": true
     },
     {
-      "timestamp": "2025-12-11T23:45:48.807308",
-      "username": "user19",
-      "account_score": 44,
-      "liveness_score": 48,
+      "timestamp": "2025-12-10T07:58:55.201094",
+      "username": "user33",
+      "account_score": 41,
+      "liveness_score": 90,
+      "verdict": "FAKE",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-11-25T07:58:55.201094",
+      "username": "user46",
+      "account_score": 36,
+      "liveness_score": 84,
+      "verdict": "FAKE",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-12-16T07:58:55.201094",
+      "username": "user45",
+      "account_score": 26,
+      "liveness_score": 81,
+      "verdict": "FAKE",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-11-29T07:58:55.202655",
+      "username": "user9",
+      "account_score": 65,
+      "liveness_score": 88,
       "verdict": "SUSPICIOUS",
       "is_fake": false
     },
     {
-      "timestamp": "2025-11-26T23:45:48.807308",
-      "username": "user32",
-      "account_score": 91,
+      "timestamp": "2025-11-20T07:58:55.202655",
+      "username": "user1",
+      "account_score": 57,
+      "liveness_score": 76,
+      "verdict": "FAKE",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-12-08T07:58:55.202655",
+      "username": "user30",
+      "account_score": 43,
+      "liveness_score": 95,
+      "verdict": "REAL",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-11-29T07:58:55.202655",
+      "username": "user14",
+      "account_score": 22,
+      "liveness_score": 76,
+      "verdict": "REAL",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-12-18T07:58:55.202655",
+      "username": "user29",
+      "account_score": 88,
+      "liveness_score": 37,
+      "verdict": "SUSPICIOUS",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-12-18T07:58:55.202655",
+      "username": "user28",
+      "account_score": 23,
       "liveness_score": 60,
       "verdict": "FAKE",
-      "is_fake": true
+      "is_fake": false
     },
     {
-      "timestamp": "2025-11-28T23:45:48.807308",
-      "username": "user16",
-      "account_score": 93,
-      "liveness_score": 48,
+      "timestamp": "2025-11-22T07:58:55.202655",
+      "username": "user26",
+      "account_score": 66,
+      "liveness_score": 34,
+      "verdict": "REAL",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-11-24T07:58:55.202655",
+      "username": "user31",
+      "account_score": 82,
+      "liveness_score": 74,
       "verdict": "FAKE",
       "is_fake": true
     },
     {
-      "timestamp": "2025-11-24T23:45:48.807308",
-      "username": "user27",
-      "account_score": 15,
-      "liveness_score": 87,
+      "timestamp": "2025-11-22T07:58:55.202655",
+      "username": "user8",
+      "account_score": 92,
+      "liveness_score": 69,
       "verdict": "REAL",
       "is_fake": false
     },
     {
-      "timestamp": "2025-12-10T23:45:48.807308",
-      "username": "user18",
-      "account_score": 52,
-      "liveness_score": 74,
+      "timestamp": "2025-12-10T07:58:55.202655",
+      "username": "user2",
+      "account_score": 83,
+      "liveness_score": 32,
+      "verdict": "FAKE",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-12-15T07:58:55.202655",
+      "username": "user23",
+      "account_score": 74,
+      "liveness_score": 42,
+      "verdict": "FAKE",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-12-04T07:58:55.202655",
+      "username": "user15",
+      "account_score": 78,
+      "liveness_score": 51,
       "verdict": "REAL",
       "is_fake": false
     },
     {
-      "timestamp": "2025-11-30T23:45:48.807308",
-      "username": "user47",
-      "account_score": 69,
+      "timestamp": "2025-12-12T07:58:55.202655",
+      "username": "user8",
+      "account_score": 61,
+      "liveness_score": 96,
+      "verdict": "REAL",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-12-02T07:58:55.202655",
+      "username": "user20",
+      "account_score": 43,
+      "liveness_score": 86,
+      "verdict": "SUSPICIOUS",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-11-26T07:58:55.202655",
+      "username": "user15",
+      "account_score": 80,
+      "liveness_score": 88,
+      "verdict": "REAL",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-12-11T07:58:55.202655",
+      "username": "user44",
+      "account_score": 24,
       "liveness_score": 57,
       "verdict": "REAL",
       "is_fake": false
     },
     {
-      "timestamp": "2025-11-15T23:45:48.807308",
-      "username": "user23",
-      "account_score": 74,
-      "liveness_score": 66,
+      "timestamp": "2025-12-07T07:58:55.202655",
+      "username": "user34",
+      "account_score": 28,
+      "liveness_score": 54,
+      "verdict": "FAKE",
+      "is_fake": true
+    },
+    {
+      "timestamp": "2025-12-15T07:58:55.202655",
+      "username": "user31",
+      "account_score": 73,
+      "liveness_score": 70,
       "verdict": "FAKE",
       "is_fake": false
     },
     {
-      "timestamp": "2025-11-22T23:45:48.807308",
-      "username": "user29",
-      "account_score": 35,
-      "liveness_score": 94,
+      "timestamp": "2025-11-30T07:58:55.202655",
+      "username": "user36",
+      "account_score": 16,
+      "liveness_score": 81,
+      "verdict": "SUSPICIOUS",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-12-14T07:58:55.202655",
+      "username": "user20",
+      "account_score": 49,
+      "liveness_score": 73,
       "verdict": "FAKE",
       "is_fake": true
     },
     {
-      "timestamp": "2025-12-01T23:45:48.807308",
-      "username": "user13",
-      "account_score": 58,
-      "liveness_score": 60,
+      "timestamp": "2025-12-14T07:58:55.202655",
+      "username": "user47",
+      "account_score": 86,
+      "liveness_score": 76,
       "verdict": "FAKE",
       "is_fake": true
     },
     {
-      "timestamp": "2025-11-18T23:45:48.807308",
-      "username": "user1",
-      "account_score": 24,
-      "liveness_score": 50,
+      "timestamp": "2025-12-05T07:58:55.202655",
+      "username": "user50",
+      "account_score": 82,
+      "liveness_score": 37,
       "verdict": "REAL",
       "is_fake": false
     },
     {
-      "username": "user123",
-      "account_score": 22.07063492063492,
-      "liveness_score": 100,
-      "verdict": "REAL ACCOUNT VERIFIED",
-      "timestamp": "2025-12-15 11:05:54",
+      "timestamp": "2025-11-22T07:58:55.202655",
+      "username": "user48",
+      "account_score": 17,
+      "liveness_score": 59,
+      "verdict": "FAKE",
       "is_fake": false
     },
     {
-      "username": "user123",
-      "account_score": 22.07063492063492,
-      "liveness_score": 100,
-      "verdict": "REAL ACCOUNT VERIFIED",
-      "timestamp": "2025-12-15 11:09:30",
+      "timestamp": "2025-11-28T07:58:55.202655",
+      "username": "user8",
+      "account_score": 95,
+      "liveness_score": 78,
+      "verdict": "REAL",
       "is_fake": false
     },
     {
-      "username": "user123",
-      "account_score": 22.07063492063492,
+      "timestamp": "2025-11-24T07:58:55.202655",
+      "username": "user44",
+      "account_score": 44,
+      "liveness_score": 47,
+      "verdict": "FAKE",
+      "is_fake": true
+    },
+    {
+      "timestamp": "2025-12-01T07:58:55.202655",
+      "username": "user1",
+      "account_score": 29,
+      "liveness_score": 88,
+      "verdict": "FAKE",
+      "is_fake": true
+    },
+    {
+      "timestamp": "2025-11-29T07:58:55.202655",
+      "username": "user47",
+      "account_score": 76,
+      "liveness_score": 89,
+      "verdict": "SUSPICIOUS",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-12-19T07:58:55.202655",
+      "username": "user31",
+      "account_score": 79,
+      "liveness_score": 69,
+      "verdict": "REAL",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-11-27T07:58:55.202655",
+      "username": "user18",
+      "account_score": 90,
+      "liveness_score": 99,
+      "verdict": "FAKE",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-11-28T07:58:55.202655",
+      "username": "user24",
+      "account_score": 38,
+      "liveness_score": 75,
+      "verdict": "FAKE",
+      "is_fake": true
+    },
+    {
+      "timestamp": "2025-12-07T07:58:55.202655",
+      "username": "user15",
+      "account_score": 92,
+      "liveness_score": 83,
+      "verdict": "FAKE",
+      "is_fake": true
+    },
+    {
+      "timestamp": "2025-12-20T07:58:55.202655",
+      "username": "user19",
+      "account_score": 21,
+      "liveness_score": 96,
+      "verdict": "SUSPICIOUS",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-11-20T07:58:55.202655",
+      "username": "user47",
+      "account_score": 71,
+      "liveness_score": 73,
+      "verdict": "SUSPICIOUS",
+      "is_fake": false
+    },
+    {
+      "timestamp": "2025-12-15T07:58:55.202655",
+      "username": "user29",
+      "account_score": 60,
+      "liveness_score": 44,
+      "verdict": "FAKE",
+      "is_fake": true
+    },
+    {
+      "timestamp": "2025-12-03T07:58:55.202655",
+      "username": "user17",
+      "account_score": 46,
+      "liveness_score": 82,
+      "verdict": "FAKE",
+      "is_fake": true
+    },
+    {
+      "username": "blocked_user",
+      "account_score": 100,
+      "liveness_score": 0,
+      "verdict": "CONFIRMED FAKE/BOT",
+      "timestamp": "2025-12-20 08:04:49",
+      "is_fake": true
+    },
+    {
+      "username": "blocked_user",
+      "account_score": 90.0,
+      "liveness_score": 0,
+      "verdict": "CONFIRMED FAKE/BOT",
+      "timestamp": "2025-12-20 08:05:46",
+      "is_fake": true
+    },
+    {
+      "username": "blocked_user",
+      "account_score": 55.0,
       "liveness_score": 100,
       "verdict": "REAL ACCOUNT VERIFIED",
-      "timestamp": "2025-12-15 12:02:04",
+      "timestamp": "2025-12-20 08:07:17",
+      "is_fake": false
+    },
+    {
+      "username": "pending_user2",
+      "account_score": 55.0,
+      "liveness_score": 100,
+      "verdict": "REAL ACCOUNT VERIFIED",
+      "timestamp": "2025-12-20 08:21:34",
+      "is_fake": false
+    },
+    {
+      "username": "test_unverified2",
+      "account_score": 70.0,
+      "liveness_score": 100,
+      "verdict": "SUSPICIOUS - MANUAL REVIEW REQUIRED",
+      "timestamp": "2025-12-20 08:36:56",
+      "is_fake": false
+    },
+    {
+      "username": "blocked_suspicious",
+      "account_score": 55.0,
+      "liveness_score": 100,
+      "verdict": "REAL ACCOUNT VERIFIED",
+      "timestamp": "2025-12-20 08:38:35",
       "is_fake": false
     }
   ],
-  "total_count": 53,
-  "passed_count": 34,
-  "failed_count": 19
+  "total_count": 56,
+  "passed_count": 39,
+  "failed_count": 17
 }
